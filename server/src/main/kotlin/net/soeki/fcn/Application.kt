@@ -20,5 +20,9 @@ fun Application.module() {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
+
+        post("/createTables") {
+            createTables()
+        }
     }
 }
