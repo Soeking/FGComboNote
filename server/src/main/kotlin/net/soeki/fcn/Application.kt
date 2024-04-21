@@ -9,20 +9,15 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun main() {
-    connectDB()
-    readTest()
     embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
 fun Application.module() {
+    createTables()
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
-        }
-
-        post("/createTables") {
-            createTables()
         }
     }
 }

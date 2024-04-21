@@ -13,6 +13,7 @@ object Test : Table() {
 object Character : Table() {
     val id: Column<Int> = integer("id").autoIncrement()
     val name: Column<String> = varchar("name", 50)
+    val order: Column<Int> = integer("order").default(0)
 
     override val primaryKey = PrimaryKey(id)
 }
