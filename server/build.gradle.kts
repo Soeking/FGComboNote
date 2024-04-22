@@ -11,8 +11,6 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=${extra["development"] ?: "false"}")
 }
 
-val exposedVersion: String by project
-
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
@@ -24,9 +22,9 @@ dependencies {
     implementation(libs.ktor.server.negotiation)
 
     //exposed
-    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
 
     //postgres
     implementation(libs.postgres)
