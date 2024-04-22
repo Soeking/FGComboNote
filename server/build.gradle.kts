@@ -20,6 +20,7 @@ dependencies {
     testImplementation(libs.kotlin.test.junit)
 
     implementation(libs.ktor.server.negotiation)
+    implementation(libs.ktor.serialization.json)
 
     //exposed
     implementation(libs.exposed.core)

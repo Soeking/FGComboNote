@@ -1,5 +1,7 @@
 package net.soeki.fcn.query
 
+import CharacterData
+import GameVersionData
 import net.soeki.fcn.Character
 import net.soeki.fcn.GameVersion
 import org.jetbrains.exposed.sql.*
@@ -12,8 +14,14 @@ fun createCharacter(newCharacter: Character) {
     }
 }
 
-fun readAllCharacters(): List<ResultRow> {
-    return Character.selectAll().orderBy(Character.order, SortOrder.ASC).toList()
+fun readAllCharacters(): List<CharacterData> {
+    return Character.selectAll().orderBy(Character.order, SortOrder.ASC).map {
+        CharacterData(
+            it[Character.id],
+            it[Character.name],
+            it[Character.order]
+        )
+    }
 }
 
 fun updateCharacter(newCharacter: Character) {
@@ -33,8 +41,10 @@ fun createVersion(newVersion: String) {
     }
 }
 
-fun readAllVersion(): List<ResultRow> {
-    return GameVersion.selectAll().orderBy(GameVersion.version, SortOrder.ASC).toList()
+fun readAllVersion(): List<GameVersionData> {
+    return GameVersion.selectAll().orderBy(GameVersion.version, SortOrder.ASC).map {
+        GameVersionData(it[GameVersion.id], it[GameVersion.version])
+    }
 }
 
 fun updateVersion(newGameVersion: GameVersion) {

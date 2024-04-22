@@ -3,7 +3,6 @@ package net.soeki.fcn.query
 import ComboDetailData
 import net.soeki.fcn.ComboDetail
 import net.soeki.fcn.ComboVersion
-import net.soeki.fcn.GameVersion
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
