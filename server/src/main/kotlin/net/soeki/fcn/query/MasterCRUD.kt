@@ -14,7 +14,7 @@ fun createCharacter(newCharacter: Character) {
     }
 }
 
-fun readAllCharacters(): List<CharacterData> {
+fun getAllCharacters(): List<CharacterData> {
     return Character.selectAll().orderBy(Character.order, SortOrder.ASC).map {
         CharacterData(
             it[Character.id],
@@ -41,7 +41,7 @@ fun createVersion(newVersion: String) {
     }
 }
 
-fun readAllVersion(): List<GameVersionData> {
+fun getAllVersion(): List<GameVersionData> {
     return GameVersion.selectAll().orderBy(GameVersion.version, SortOrder.ASC).map {
         GameVersionData(it[GameVersion.id], it[GameVersion.version])
     }
