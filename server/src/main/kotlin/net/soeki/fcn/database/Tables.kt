@@ -1,4 +1,4 @@
-package net.soeki.fcn
+package net.soeki.fcn.database
 
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table

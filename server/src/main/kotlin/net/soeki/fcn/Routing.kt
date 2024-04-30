@@ -3,8 +3,8 @@ package net.soeki.fcn
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import net.soeki.fcn.query.getAllCharacters
-import net.soeki.fcn.query.getAllVersion
+import net.soeki.fcn.database.getAllCharacters
+import net.soeki.fcn.database.getAllVersion
 
 fun Application.configureRouting() {
     routing {

@@ -1,8 +1,7 @@
-package net.soeki.fcn.query
+package net.soeki.fcn.database
 
 import ComboDetailData
-import net.soeki.fcn.ComboDetail
-import net.soeki.fcn.ComboVersion
+import ComboListInfo
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -18,7 +17,28 @@ fun createComboDetail(comboDetail: ComboDetail) {
     }
 }
 
-fun readComboDetail(id: Int): ComboDetailData {
+fun getComboList(character: Int?, version: Int?): List<ComboListInfo> {
+    return transaction {
+        val query = ComboDetail.join(
+            ComboVersion,
+            JoinType.INNER,
+            onColumn = ComboDetail.id,
+            otherColumn = ComboVersion.comboId
+        ).select(ComboDetail.id, ComboDetail.recipe, ComboDetail.damage)
+        character?.let {
+            query.andWhere { ComboDetail.characterId eq character }
+        }
+        version?.let {
+            query.andWhere { ComboVersion.versionId eq version }
+        }
+    }?.map {
+        ComboListInfo(
+            it[ComboDetail.id], it[ComboDetail.recipe], it[ComboDetail.damage]
+        )
+    } ?: emptyList()
+}
+
+fun getComboDetail(id: Int): ComboDetailData {
     return transaction {
         ComboDetail.selectAll().adjustWhere { ComboDetail.id eq id }.limit(1)
     }.map {

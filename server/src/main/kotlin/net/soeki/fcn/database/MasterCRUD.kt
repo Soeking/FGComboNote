@@ -1,9 +1,7 @@
-package net.soeki.fcn.query
+package net.soeki.fcn.database
 
 import CharacterData
 import GameVersionData
-import net.soeki.fcn.Character
-import net.soeki.fcn.GameVersion
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
