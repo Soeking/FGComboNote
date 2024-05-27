@@ -37,3 +37,11 @@ data class ComboListInfo(
     val recipe: String,
     val damage: Int
 )
+
+@Serializable
+data class ComboVersionName(
+    val id: Int, // comboVersion id
+    val comboId: Int,
+    val versionId: Int,
+    val version: String
+)

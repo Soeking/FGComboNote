@@ -1,15 +1,13 @@
 package net.soeki.fcn
 
 import CharacterData
+import ComboDetailData
 import GameVersionData
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import net.soeki.fcn.database.deleteCharacter
-import net.soeki.fcn.database.deleteVersion
-import net.soeki.fcn.database.getAllCharacters
-import net.soeki.fcn.database.getAllVersion
+import net.soeki.fcn.database.*
 
 fun Application.configureRouting() {
     routing {
@@ -36,7 +34,7 @@ fun Application.configureRouting() {
             }
             post("/update-version") {
                 // body
-                val version=call.receive<GameVersionData>()
+                val version = call.receive<GameVersionData>()
                 createOrUpdateVersion(version)
             }
             delete("/delete-version/{id}") {
@@ -47,15 +45,48 @@ fun Application.configureRouting() {
             }
         }
         route("/note") {
-            get("/list") {
-
+            get("/list/{character}/{version}") {
+                // url
+                val character = call.parameters["character"]
+                val version = call.parameters["version"]
+                getComboList(character?.toInt(), version?.toInt()).let {
+                    call.respond(it)
+                }
             }
             get("/detail/{id}") {
-
+                // url comboId
+                call.parameters["id"]?.let {
+                    call.respond(getComboDetail(it.toInt()))
+                }
+            }
+            get("/version-list/{id}") {
+                // url comboId
+                call.parameters["id"]?.let {
+                    call.respond(getVersionIdsByCombo(it.toInt()))
+                }
             }
             post("/update-combo") {
-                // create or update
-
+                // body
+                val comboData = call.receive<ComboDetailData>()
+                createOrUpdateComboDetail(comboData)
+            }
+            post("/create-combo-version/{combo}/{version}") {
+                // url
+                val combo = call.parameters["combo"]
+                val version = call.parameters["version"]
+                createComboVersionWrapNull(combo?.toInt(), version?.toInt())
+            }
+            delete("/delete-combo/{id}") {
+                // url comboId
+                call.parameters["id"]?.let {
+                    deleteComboDetail(it.toInt())
+                }
+            }
+            delete("/delete-combo-version/{id}") {
+                // url comboId
+                call.parameters["id"]?.let {
+                    deleteComboVersion(it.toInt())
+                }
             }
         }
     }

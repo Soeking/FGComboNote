@@ -45,6 +45,12 @@ fun getAllVersion(): List<GameVersionData> {
     }
 }
 
+fun getLatestVersion(): Int {
+    return GameVersion.select(GameVersion.id).orderBy(GameVersion.id, SortOrder.DESC).limit(1).map {
+        it[GameVersion.id]
+    }.first()
+}
+
 fun updateVersion(newGameVersion: GameVersionData) {
     GameVersion.update({ GameVersion.id eq newGameVersion.id }) {
         it[version] = newGameVersion.version

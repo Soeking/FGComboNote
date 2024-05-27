@@ -2,19 +2,21 @@ package net.soeki.fcn.database
 
 import ComboDetailData
 import ComboListInfo
+import ComboVersionName
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun createComboDetail(comboDetail: ComboDetail) {
-    ComboDetail.insert {
+fun createComboDetail(comboDetail: ComboDetailData): Int {
+    return ComboDetail.insertAndGetId {
         it[characterId] = comboDetail.characterId
         it[recipe] = comboDetail.recipe
         it[damage] = comboDetail.damage
         it[situation] = comboDetail.situation
         it[description] = comboDetail.description
-        it[video] = comboDetail.video
-    }
+        it[video] = ExposedBlob(comboDetail.video)
+    }.run { value }
 }
 
 fun getComboList(character: Int?, version: Int?): List<ComboListInfo> {
@@ -31,11 +33,12 @@ fun getComboList(character: Int?, version: Int?): List<ComboListInfo> {
         version?.let {
             query.andWhere { ComboVersion.versionId eq version }
         }
-    }?.map {
+        query.orderBy(ComboDetail.characterId, SortOrder.ASC)
+    }.map {
         ComboListInfo(
-            it[ComboDetail.id], it[ComboDetail.recipe], it[ComboDetail.damage]
+            it[ComboDetail.id].value, it[ComboDetail.recipe], it[ComboDetail.damage]
         )
-    } ?: emptyList()
+    }
 }
 
 fun getComboDetail(id: Int): ComboDetailData {
@@ -43,7 +46,7 @@ fun getComboDetail(id: Int): ComboDetailData {
         ComboDetail.selectAll().adjustWhere { ComboDetail.id eq id }.limit(1)
     }.map {
         ComboDetailData(
-            it[ComboDetail.id],
+            it[ComboDetail.id].value,
             it[ComboDetail.characterId],
             it[ComboDetail.recipe],
             it[ComboDetail.damage],
@@ -54,14 +57,14 @@ fun getComboDetail(id: Int): ComboDetailData {
     }.first()
 }
 
-fun updateComboDetail(comboDetail: ComboDetail) {
+fun updateComboDetail(comboDetail: ComboDetailData) {
     ComboDetail.update({ ComboDetail.id eq comboDetail.id }) {
         it[characterId] = comboDetail.characterId
         it[recipe] = comboDetail.recipe
         it[damage] = comboDetail.damage
         it[situation] = comboDetail.situation
         it[description] = comboDetail.description
-        it[video] = comboDetail.video
+        it[video] = ExposedBlob(comboDetail.video)
     }
 }
 
@@ -69,21 +72,34 @@ fun deleteComboDetail(id: Int) {
     ComboDetail.deleteWhere { ComboDetail.id eq id }
 }
 
-fun createComboVersion(comboVersion: ComboVersion) {
+fun createComboVersion(combo: Int, version: Int) {
     ComboVersion.insert {
-        it[comboId] = comboVersion.comboId
-        it[versionId] = comboVersion.versionId
+        it[comboId] = combo
+        it[versionId] = version
     }
 }
 
-fun getComboIdsByVersion(version: Int): List<Int> {
-    return ComboVersion.select(ComboVersion.comboId).where { ComboVersion.versionId eq version }.withDistinct()
-        .map { it[ComboVersion.comboId] }
-}
-
-fun getVersionIdsByCombo(comboId: Int): List<Int> {
-    return ComboVersion.select(ComboVersion.versionId).where { ComboVersion.comboId eq comboId }.withDistinct()
-        .map { it[ComboVersion.versionId] }
+fun getVersionIdsByCombo(comboId: Int): List<ComboVersionName> {
+    return transaction {
+        ComboVersion.join(
+            GameVersion,
+            JoinType.INNER,
+            onColumn = ComboVersion.versionId,
+            otherColumn = GameVersion.id
+        ).select(
+            ComboVersion.id,
+            ComboVersion.comboId,
+            ComboVersion.versionId,
+            GameVersion.version
+        ).where { ComboVersion.comboId eq comboId }.withDistinct()
+    }.map {
+        ComboVersionName(
+            it[ComboVersion.versionId],
+            it[ComboVersion.comboId].value,
+            it[ComboVersion.versionId],
+            it[GameVersion.version]
+        )
+    }
 }
 
 fun deleteComboVersion(id: Int) {
