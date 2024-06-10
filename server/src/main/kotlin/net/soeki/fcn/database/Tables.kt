@@ -22,7 +22,7 @@ object Character : Table() {
 
 object GameVersion : Table() {
     val id: Column<Int> = integer("id").autoIncrement()
-    val version: Column<String> = varchar("name", 50)
+    val version: Column<String> = varchar("version", 50)
 
     override val primaryKey = PrimaryKey(id)
 }

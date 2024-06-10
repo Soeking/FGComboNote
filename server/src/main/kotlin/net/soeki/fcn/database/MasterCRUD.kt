@@ -4,6 +4,7 @@ import CharacterData
 import GameVersionData
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
 
 fun createCharacter(newCharacter: CharacterData) {
     Character.insert {
@@ -40,9 +41,13 @@ fun createVersion(newVersion: GameVersionData) {
 }
 
 fun getAllVersion(): List<GameVersionData> {
-    return GameVersion.selectAll().orderBy(GameVersion.version, SortOrder.ASC).map {
-        GameVersionData(it[GameVersion.id], it[GameVersion.version])
+    val list = transaction {
+        GameVersion.selectAll().orderBy(GameVersion.version, SortOrder.ASC).map {
+            GameVersionData(it[GameVersion.id], it[GameVersion.version])
+        }
     }
+
+    return list
 }
 
 fun getLatestVersion(): Int {

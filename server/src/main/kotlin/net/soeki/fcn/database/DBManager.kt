@@ -11,7 +11,7 @@ fun connectDB() {
     val pass = System.getenv("DB_PASS")
 
     if (url == null || user == null || pass == null)
-        throw Exception("not found environment variable about db")
+        throw Exception("not found environment variable for db")
     Database.connect("jdbc:$url", driver = "org.postgresql.Driver", user = user, password = pass)
 }
 
