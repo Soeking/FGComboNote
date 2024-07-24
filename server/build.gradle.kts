@@ -29,4 +29,13 @@ dependencies {
 
     //postgres
     implementation(libs.postgres)
+
+    //kotest
+    testImplementation(libs.kotest.assertion.core)
+    testImplementation(libs.kotest.assertion.ktor)
+    testImplementation(libs.kotest.runner)
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }

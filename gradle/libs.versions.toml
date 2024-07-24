@@ -19,6 +19,8 @@ logback = "1.5.3"
 kotlinx = "1.6.3"
 exposedVersion = "0.49.0"
 postgres = "42.7.1"
+kotest = "5.9.0"
+kotest-ktor = "2.0.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -44,6 +46,9 @@ exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "e
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedVersion" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposedVersion" }
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+kotest-assertion-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-assertion-ktor = { module = "io.kotest.extensions:kotest-assertions-ktor", version.ref = "kotest-ktor" }
+kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
