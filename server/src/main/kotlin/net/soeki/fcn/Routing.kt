@@ -2,6 +2,7 @@ package net.soeki.fcn
 
 import CharacterData
 import ComboDetailData
+import ComboWithVideo
 import GameVersionData
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -67,7 +68,7 @@ fun Application.configureRouting() {
             }
             post("/update-combo") {
                 // body
-                val comboData = call.receive<ComboDetailData>()
+                val comboData = call.receive<ComboWithVideo>()
                 createOrUpdateComboDetail(comboData)
             }
             post("/create-combo-version/{combo}/{version}") {
@@ -79,7 +80,7 @@ fun Application.configureRouting() {
             delete("/delete-combo/{id}") {
                 // url comboId
                 call.parameters["id"]?.let {
-                    deleteComboDetail(it.toInt())
+                    deleteComboData(it.toInt())
                 }
             }
             delete("/delete-combo-version/{id}") {

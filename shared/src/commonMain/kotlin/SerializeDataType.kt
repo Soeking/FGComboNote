@@ -20,8 +20,13 @@ data class ComboDetailData(
     val recipe: String,
     val damage: Int,
     val situation: String,
-    val description: String,
-    val video: ByteArray
+    val description: String
+)
+
+@Serializable
+data class ComboWithVideo(
+    val detailData: ComboDetailData,
+    val videos: List<ByteArray>
 )
 
 @Serializable
@@ -33,7 +38,7 @@ data class ComboVersionData(
 
 @Serializable
 data class ComboListInfo(
-    val id:Int,
+    val id: Int,
     val recipe: String,
     val damage: Int
 )

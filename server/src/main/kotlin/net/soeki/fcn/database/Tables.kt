@@ -1,5 +1,6 @@
 package net.soeki.fcn.database
 
+import net.soeki.fcn.database.ComboDetail.nullable
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ReferenceOption
@@ -33,7 +34,11 @@ object ComboDetail : IntIdTable() {
     val damage: Column<Int> = integer("damage") // ダメージ
     val situation: Column<String> = varchar("situation", 50) // 始動状況
     val description: Column<String> = varchar("description", 200) // 説明・備考
-    val video: Column<ExposedBlob?> = blob("video").nullable()
+}
+
+object ComboVideo : IntIdTable() {
+    val comboId = ComboVersion.reference("combo_id", ComboDetail, onDelete = ReferenceOption.CASCADE)
+    val video: Column<ExposedBlob> = blob("video")
 }
 
 object ComboVersion : Table() {

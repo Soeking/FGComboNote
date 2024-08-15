@@ -16,7 +16,15 @@ fun createComboDetail(comboDetail: ComboDetailData): Int {
             it[damage] = comboDetail.damage
             it[situation] = comboDetail.situation
             it[description] = comboDetail.description
-            it[video] = ExposedBlob(comboDetail.video)
+        }.run { value }
+    }
+}
+
+fun createComboVideo(combo: Int, content: ByteArray): Int {
+    return transaction {
+        ComboVideo.insertAndGetId {
+            it[comboId] = combo
+            it[video] = ExposedBlob(content)
         }.run { value }
     }
 }
@@ -52,10 +60,20 @@ fun getComboDetail(id: Int): ComboDetailData {
                 it[ComboDetail.recipe],
                 it[ComboDetail.damage],
                 it[ComboDetail.situation],
-                it[ComboDetail.description],
-                it[ComboDetail.video]?.bytes ?: ByteArray(0)
+                it[ComboDetail.description]
             )
         }.first()
+    }
+}
+
+fun getComboVideos(id: Int): List<ByteArray> {
+    return transaction {
+        ComboVideo.select(ComboVideo.video)
+            .where { ComboVideo.comboId eq id }
+            .orderBy(ComboVideo.id, SortOrder.ASC)
+            .map {
+                it[ComboVideo.video].bytes
+            }
     }
 }
 
@@ -67,7 +85,6 @@ fun updateComboDetail(comboDetail: ComboDetailData) {
             it[damage] = comboDetail.damage
             it[situation] = comboDetail.situation
             it[description] = comboDetail.description
-            it[video] = ExposedBlob(comboDetail.video)
         }
     }
 }
@@ -75,6 +92,18 @@ fun updateComboDetail(comboDetail: ComboDetailData) {
 fun deleteComboDetail(id: Int) {
     transaction {
         ComboDetail.deleteWhere { ComboDetail.id eq id }
+    }
+}
+
+fun deleteComboVideo(id: Int) {
+    transaction {
+        ComboVideo.deleteWhere { ComboVideo.id eq id }
+    }
+}
+
+fun deleteComboVideosByComboId(id: Int) {
+    transaction {
+        ComboVideo.deleteWhere { ComboVideo.comboId eq id }
     }
 }
 
@@ -113,5 +142,11 @@ fun getVersionIdsByCombo(comboId: Int): List<ComboVersionName> {
 fun deleteComboVersion(id: Int) {
     transaction {
         ComboVersion.deleteWhere { ComboVersion.id eq id }
+    }
+}
+
+fun deleteComboVersionsByComboId(id: Int) {
+    transaction {
+        ComboVersion.deleteWhere { ComboVersion.comboId eq id }
     }
 }
