@@ -1,21 +1,23 @@
 package net.soeki.fcn
 
-import ComboDetailData
 import ComboWithVideo
 import net.soeki.fcn.database.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 fun createOrUpdateComboDetail(comboWithVideos: ComboWithVideo) {
-    if (comboWithVideos.detailData.id == 0) {
-        // create and connect with latest version
-        val detailId = createComboDetail(comboWithVideos.detailData)
+    transaction {
+        if (comboWithVideos.detailData.id == 0) {
+            // create and connect with latest version
+            val detailId = createComboDetail(comboWithVideos.detailData)
 
-        val latestVersion = getLatestVersion()
-        createComboVersion(detailId, latestVersion)
-        comboWithVideos.videos.forEach {
-            createComboVideo(detailId, it)
-        }
-    } else
-        updateComboDetail(comboWithVideos.detailData)
+            val latestVersion = getLatestVersion()
+            createComboVersion(detailId, latestVersion)
+            comboWithVideos.videos.forEach {
+                createComboVideo(detailId, it)
+            }
+        } else
+            updateComboDetail(comboWithVideos.detailData)
+    }
 }
 
 fun createComboVersionWrapNull(combo: Int?, version: Int?) {

@@ -1,12 +1,12 @@
 package net.soeki.fcn.database
 
-import CharacterData
+import GameCharacterData
 import GameVersionData
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun createCharacter(newCharacter: CharacterData) {
+fun createCharacter(newCharacter: GameCharacterData) {
     transaction {
         Character.insert {
             it[name] = newCharacter.name
@@ -15,10 +15,10 @@ fun createCharacter(newCharacter: CharacterData) {
     }
 }
 
-fun getAllCharacters(): List<CharacterData> {
+fun getAllCharacters(): List<GameCharacterData> {
     return transaction {
         Character.selectAll().orderBy(Character.order, SortOrder.ASC).map {
-            CharacterData(
+            GameCharacterData(
                 it[Character.id],
                 it[Character.name],
                 it[Character.order]
@@ -27,7 +27,7 @@ fun getAllCharacters(): List<CharacterData> {
     }
 }
 
-fun updateCharacter(newCharacter: CharacterData) {
+fun updateCharacter(newCharacter: GameCharacterData) {
     transaction {
         Character.update({ Character.id eq newCharacter.id }) {
             it[name] = newCharacter.name

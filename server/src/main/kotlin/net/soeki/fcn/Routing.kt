@@ -1,7 +1,6 @@
 package net.soeki.fcn
 
-import CharacterData
-import ComboDetailData
+import GameCharacterData
 import ComboWithVideo
 import GameVersionData
 import io.ktor.server.application.*
@@ -21,7 +20,7 @@ fun Application.configureRouting() {
             }
             post("/update-character") {
                 // body
-                val character = call.receive<CharacterData>()
+                val character = call.receive<GameCharacterData>()
                 createOrUpdateCharacter(character)
             }
             delete("/delete-character/{id}") {

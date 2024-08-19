@@ -1,14 +1,14 @@
 package net.soeki.fcn
 
-import CharacterData
+import GameCharacterData
 import GameVersionData
 import net.soeki.fcn.database.*
 
-fun createOrUpdateCharacter(characterData: CharacterData) {
-    if (characterData.id == 0)
-        createCharacter(characterData)
+fun createOrUpdateCharacter(gameCharacterData: GameCharacterData) {
+    if (gameCharacterData.id == 0)
+        createCharacter(gameCharacterData)
     else
-        updateCharacter(characterData)
+        updateCharacter(gameCharacterData)
 }
 
 fun createOrUpdateVersion(gameVersionData: GameVersionData) {

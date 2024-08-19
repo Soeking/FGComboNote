@@ -1,7 +1,7 @@
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CharacterData(
+data class GameCharacterData(
     val id: Int,
     val name: String,
     val order: Int
