@@ -1,17 +1,10 @@
 package net.soeki.fcn.database
 
-import net.soeki.fcn.database.ComboDetail.nullable
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
-
-object Test : Table() {
-    val id: Column<Int> = integer("id")
-    val name: Column<String> = varchar("name", 50)
-    val active: Column<Boolean> = bool("active")
-}
 
 object Character : Table() {
     val id: Column<Int> = integer("id").autoIncrement()

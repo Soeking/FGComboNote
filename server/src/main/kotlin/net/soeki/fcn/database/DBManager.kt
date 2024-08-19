@@ -18,14 +18,6 @@ fun connectDB() {
 fun createTables() {
     connectDB()
     transaction {
-        SchemaUtils.create(Character, GameVersion, ComboDetail, ComboVersion)
-    }
-}
-
-fun readTest() {
-    transaction {
-        Test.selectAll().toList().forEach {
-            println("${it[Test.id]} ${it[Test.name]} ${it[Test.active]}")
-        }
+        SchemaUtils.create(Character, GameVersion, ComboDetail, ComboVersion, ComboVideo)
     }
 }
