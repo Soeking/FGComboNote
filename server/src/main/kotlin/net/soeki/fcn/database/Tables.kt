@@ -30,7 +30,7 @@ object ComboDetail : IntIdTable() {
 }
 
 object ComboVideo : IntIdTable() {
-    val comboId = ComboVersion.reference("combo_id", ComboDetail, onDelete = ReferenceOption.CASCADE)
+    val comboId = reference("combo_id", ComboDetail, onDelete = ReferenceOption.CASCADE)
     val video: Column<ExposedBlob> = blob("video")
 }
 
