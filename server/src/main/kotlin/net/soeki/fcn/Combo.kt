@@ -1,5 +1,6 @@
 package net.soeki.fcn
 
+import ComboVideoData
 import ComboWithVideo
 import net.soeki.fcn.database.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -13,7 +14,7 @@ fun createOrUpdateComboDetail(comboWithVideos: ComboWithVideo) {
             val latestVersion = getLatestVersion()
             createComboVersion(detailId, latestVersion)
             comboWithVideos.videos.forEach {
-                createComboVideo(detailId, it)
+                createComboVideo(ComboVideoData(detailId, it))
             }
         } else
             updateComboDetail(comboWithVideos.detailData)
