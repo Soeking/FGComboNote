@@ -1,6 +1,7 @@
 package net.soeki.fcn
 
 import APIResult
+import ComboVideoData
 import GameCharacterData
 import ComboWithVideo
 import GameVersionData
@@ -92,6 +93,18 @@ fun Application.configureRouting() {
                 try {
                     val comboData = call.receive<ComboWithVideo>()
                     createOrUpdateComboDetail(comboData)
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
+                } catch (e: ContentTransformationException) {
+                    call.response.status(HttpStatusCode.BadRequest)
+                    call.respond(APIResult(HttpStatusCode.BadRequest.value, e.message ?: "failed"))
+                }
+            }
+            post("/upload-combo-video") {
+                // body
+                try {
+                    val comboVideoData = call.receive<ComboVideoData>()
+                    createComboVideo(comboVideoData)
                     call.response.status(HttpStatusCode.OK)
                     call.respond(APIResult(HttpStatusCode.OK.value, "success"))
                 } catch (e: ContentTransformationException) {

@@ -3,6 +3,7 @@ package net.soeki.fcn.database
 import ComboDetailData
 import ComboListInfo
 import ComboVersionName
+import ComboVideoData
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
@@ -20,11 +21,11 @@ fun createComboDetail(comboDetail: ComboDetailData): Int {
     }
 }
 
-fun createComboVideo(combo: Int, content: ByteArray): Int {
+fun createComboVideo(comboVideoData: ComboVideoData): Int {
     return transaction {
         ComboVideo.insertAndGetId {
-            it[comboId] = combo
-            it[video] = ExposedBlob(content)
+            it[comboId] = comboVideoData.comboId
+            it[video] = ExposedBlob(comboVideoData.video)
         }.run { value }
     }
 }

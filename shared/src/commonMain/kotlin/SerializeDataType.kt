@@ -24,6 +24,12 @@ data class ComboDetailData(
 )
 
 @Serializable
+data class ComboVideoData(
+    val comboId:Int,
+    val video:ByteArray
+)
+
+@Serializable
 data class ComboWithVideo(
     val detailData: ComboDetailData,
     val videos: List<ByteArray>
