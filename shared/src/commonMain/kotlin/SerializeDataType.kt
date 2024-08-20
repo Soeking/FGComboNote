@@ -50,3 +50,9 @@ data class ComboVersionName(
     val versionId: Int,
     val version: String
 )
+
+@Serializable
+data class APIResult(
+    val status: Int,
+    val message: String
+)

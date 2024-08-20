@@ -1,8 +1,10 @@
 package net.soeki.fcn
 
+import APIResult
 import GameCharacterData
 import ComboWithVideo
 import GameVersionData
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -20,8 +22,15 @@ fun Application.configureRouting() {
             }
             post("/update-character") {
                 // body
-                val character = call.receive<GameCharacterData>()
-                createOrUpdateCharacter(character)
+                try {
+                    val character = call.receive<GameCharacterData>()
+                    createOrUpdateCharacter(character)
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
+                } catch (e: ContentTransformationException) {
+                    call.response.status(HttpStatusCode.BadRequest)
+                    call.respond(APIResult(HttpStatusCode.BadRequest.value, e.message ?: "failed"))
+                }
             }
             delete("/delete-character/{id}") {
                 // url
@@ -34,8 +43,15 @@ fun Application.configureRouting() {
             }
             post("/update-version") {
                 // body
-                val version = call.receive<GameVersionData>()
-                createOrUpdateVersion(version)
+                try {
+                    val version = call.receive<GameVersionData>()
+                    createOrUpdateVersion(version)
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
+                } catch (e: ContentTransformationException) {
+                    call.response.status(HttpStatusCode.BadRequest)
+                    call.respond(APIResult(HttpStatusCode.BadRequest.value, e.message ?: "failed"))
+                }
             }
             delete("/delete-version/{id}") {
                 // url
@@ -65,10 +81,23 @@ fun Application.configureRouting() {
                     call.respond(getVersionIdsByCombo(it.toInt()))
                 }
             }
+            get("/video-list/{id}") {
+                // url comboId
+                call.parameters["id"]?.let {
+                    call.respond(getComboVideos(it.toInt()))
+                }
+            }
             post("/update-combo") {
                 // body
-                val comboData = call.receive<ComboWithVideo>()
-                createOrUpdateComboDetail(comboData)
+                try {
+                    val comboData = call.receive<ComboWithVideo>()
+                    createOrUpdateComboDetail(comboData)
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
+                } catch (e: ContentTransformationException) {
+                    call.response.status(HttpStatusCode.BadRequest)
+                    call.respond(APIResult(HttpStatusCode.BadRequest.value, e.message ?: "failed"))
+                }
             }
             post("/create-combo-version/{combo}/{version}") {
                 // url
@@ -80,6 +109,12 @@ fun Application.configureRouting() {
                 // url comboId
                 call.parameters["id"]?.let {
                     deleteComboData(it.toInt())
+                }
+            }
+            delete("/delete-combo-video/{id}") {
+                // url id
+                call.parameters["id"]?.let {
+                    deleteComboVideo(it.toInt())
                 }
             }
             delete("/delete-combo-version/{id}") {
