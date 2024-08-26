@@ -16,8 +16,12 @@ dependencies {
     implementation(libs.logback)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+
+    testImplementation(libs.kotlin.test)
+
     testImplementation(libs.ktor.server.tests)
-    testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.ktor.server.test.host)
+    testImplementation(libs.ktor.client.negotiation)
 
     implementation(libs.ktor.server.negotiation)
     implementation(libs.ktor.serialization.json)

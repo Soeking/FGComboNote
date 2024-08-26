@@ -37,6 +37,8 @@ fun Application.configureRouting() {
                 // url
                 call.parameters["id"]?.let {
                     deleteCharacter(it.toInt())
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
                 }
             }
             get("/versions") {
@@ -58,6 +60,8 @@ fun Application.configureRouting() {
                 // url
                 call.parameters["id"]?.let {
                     deleteVersion(it.toInt())
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
                 }
             }
         }
@@ -122,18 +126,24 @@ fun Application.configureRouting() {
                 // url comboId
                 call.parameters["id"]?.let {
                     deleteComboData(it.toInt())
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
                 }
             }
             delete("/delete-combo-video/{id}") {
                 // url id
                 call.parameters["id"]?.let {
                     deleteComboVideo(it.toInt())
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
                 }
             }
             delete("/delete-combo-version/{id}") {
                 // url comboId
                 call.parameters["id"]?.let {
                     deleteComboVersion(it.toInt())
+                    call.response.status(HttpStatusCode.OK)
+                    call.respond(APIResult(HttpStatusCode.OK.value, "success"))
                 }
             }
         }
