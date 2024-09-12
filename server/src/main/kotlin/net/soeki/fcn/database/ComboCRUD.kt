@@ -30,20 +30,17 @@ fun createComboVideo(comboVideoData: ComboVideoData): Int {
     }
 }
 
-fun getComboList(character: Int?, version: Int?): List<ComboListInfo> {
+fun getComboList(character: Int, version: Int): List<ComboListInfo> {
     return transaction {
-        val query = ComboDetail.join(
-            ComboVersion,
-            JoinType.INNER,
-            onColumn = ComboDetail.id,
-            otherColumn = ComboVersion.comboId
-        ).select(ComboDetail.id, ComboDetail.recipe, ComboDetail.damage)
-        character?.let {
+        val query = ComboDetail.select(ComboDetail.id, ComboDetail.recipe, ComboDetail.damage)
+        if (character != 0)
             query.andWhere { ComboDetail.characterId eq character }
-        }
-        version?.let {
-            query.andWhere { ComboVersion.versionId eq version }
-        }
+        if (version != 0)
+            query.andWhere {
+                exists(
+                    ComboVersion.selectAll()
+                        .where { (ComboVersion.versionId eq version) and (ComboVersion.comboId eq ComboDetail.id) })
+            }
         query.orderBy(ComboDetail.characterId, SortOrder.ASC).map {
             ComboListInfo(
                 it[ComboDetail.id].value, it[ComboDetail.recipe], it[ComboDetail.damage]
@@ -131,7 +128,7 @@ fun getVersionIdsByCombo(comboId: Int): List<ComboVersionName> {
             GameVersion.version
         ).where { ComboVersion.comboId eq comboId }.withDistinct().map {
             ComboVersionName(
-                it[ComboVersion.versionId],
+                it[ComboVersion.id],
                 it[ComboVersion.comboId].value,
                 it[ComboVersion.versionId],
                 it[GameVersion.version]

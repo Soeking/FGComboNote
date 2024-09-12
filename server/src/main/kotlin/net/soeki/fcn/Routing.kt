@@ -70,7 +70,7 @@ fun Application.configureRouting() {
                 // url
                 val character = call.parameters["character"]
                 val version = call.parameters["version"]
-                getComboList(character?.toInt(), version?.toInt()).let {
+                getComboList(character?.toInt() ?: 0, version?.toInt() ?: 0).let {
                     call.respond(it)
                 }
             }

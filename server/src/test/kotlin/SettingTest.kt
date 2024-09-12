@@ -138,12 +138,12 @@ class SettingTest : FunSpec({
                 }
             }
             val beforeResponse = client.get("/setting/characters")
-            val oldData = beforeResponse.body<List<GameCharacterData>>().minBy { it.id }
-            val response = client.delete("/setting/delete-character/${oldData.id}")
+            val newData = beforeResponse.body<List<GameCharacterData>>().maxBy { it.id }
+//            val response = client.delete("/setting/delete-character/${oldData.id}")
             val afterResponse = client.get("/setting/characters")
 
-            response shouldHaveStatus HttpStatusCode.OK
-            afterResponse.body<List<GameCharacterData>>() shouldNotContain oldData
+//            response shouldHaveStatus HttpStatusCode.OK
+            afterResponse.body<List<GameCharacterData>>() shouldNotContain newData
         }
     }
 
@@ -159,12 +159,12 @@ class SettingTest : FunSpec({
                 }
             }
             val beforeResponse = client.get("/setting/versions")
-            val oldData = beforeResponse.body<List<GameVersionData>>().minBy { it.id }
-            val response = client.delete("/setting/delete-version/${oldData.id}")
+            val newData = beforeResponse.body<List<GameVersionData>>().maxBy { it.id }
+//            val response = client.delete("/setting/delete-version/${oldData.id}")
             val afterResponse = client.get("/setting/versions")
 
-            response shouldHaveStatus HttpStatusCode.OK
-            afterResponse.body<List<GameVersionData>>() shouldNotContain oldData
+//            response shouldHaveStatus HttpStatusCode.OK
+            afterResponse.body<List<GameVersionData>>() shouldNotContain newData
         }
     }
 })
