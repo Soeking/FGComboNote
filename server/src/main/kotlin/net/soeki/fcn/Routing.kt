@@ -28,7 +28,7 @@ fun Application.configureRouting() {
                     createOrUpdateCharacter(character)
                     call.response.status(HttpStatusCode.OK)
                     call.respond(APIResult(HttpStatusCode.OK.value, "success"))
-                } catch (e: ContentTransformationException) {
+                } catch (e: Exception) {
                     call.response.status(HttpStatusCode.BadRequest)
                     call.respond(APIResult(HttpStatusCode.BadRequest.value, e.message ?: "failed"))
                 }
@@ -51,7 +51,7 @@ fun Application.configureRouting() {
                     createOrUpdateVersion(version)
                     call.response.status(HttpStatusCode.OK)
                     call.respond(APIResult(HttpStatusCode.OK.value, "success"))
-                } catch (e: ContentTransformationException) {
+                } catch (e: Exception) {
                     call.response.status(HttpStatusCode.BadRequest)
                     call.respond(APIResult(HttpStatusCode.BadRequest.value, e.message ?: "failed"))
                 }
@@ -86,10 +86,28 @@ fun Application.configureRouting() {
                     call.respond(getVersionIdsByCombo(it.toInt()))
                 }
             }
-            get("/video-list/{id}") {
+            get("/video-id-list/{id}") {
                 // url comboId
                 call.parameters["id"]?.let {
-                    call.respond(getComboVideos(it.toInt()))
+                    call.respond(getComboVideoIds(it.toInt()))
+                }
+            }
+            get("/video/{id}") {
+                // url videoId
+                // header range
+                val range = call.request.headers["Range"]
+                call.parameters["id"]?.let {
+                    val videoResult = getVideoByRange(it.toInt(), range)
+                    if (videoResult.isSuccess) {
+                        val video = videoResult.getOrNull()!!
+                        if (video.second) {
+                            call.respondBytes(video.first, ContentType.Video.MP4, HttpStatusCode.PartialContent) {}
+                        } else {
+                            call.respondBytes(video.first, ContentType.Video.MP4, HttpStatusCode.OK) {}
+                        }
+                    } else {
+                        call.respond(HttpStatusCode.BadRequest)
+                    }
                 }
             }
             post("/update-combo") {
@@ -99,7 +117,7 @@ fun Application.configureRouting() {
                     createOrUpdateComboDetail(comboData)
                     call.response.status(HttpStatusCode.OK)
                     call.respond(APIResult(HttpStatusCode.OK.value, "success"))
-                } catch (e: ContentTransformationException) {
+                } catch (e: Exception) {
                     call.response.status(HttpStatusCode.BadRequest)
                     call.respond(APIResult(HttpStatusCode.BadRequest.value, e.message ?: "failed"))
                 }
@@ -111,7 +129,7 @@ fun Application.configureRouting() {
                     createComboVideo(comboVideoData)
                     call.response.status(HttpStatusCode.OK)
                     call.respond(APIResult(HttpStatusCode.OK.value, "success"))
-                } catch (e: ContentTransformationException) {
+                } catch (e: Exception) {
                     call.response.status(HttpStatusCode.BadRequest)
                     call.respond(APIResult(HttpStatusCode.BadRequest.value, e.message ?: "failed"))
                 }

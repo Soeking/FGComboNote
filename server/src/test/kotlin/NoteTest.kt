@@ -84,7 +84,7 @@ class NoteTest : FunSpec({
         }
     }
 
-    test("get videos by combo id") {
+    test("get video by combo id") {
         testApplication {
             application {
                 module()
@@ -97,13 +97,16 @@ class NoteTest : FunSpec({
             }
             val allListResponse = client.get("/note/list/${0}/${0}")
             val oldestId = allListResponse.body<List<ComboListInfo>>().minOf { it.id }
-            val videoListResponse = client.get("/note/video-list/${oldestId}")
+            val videoListResponse = client.get("/note/video-id-list/${oldestId}")
+            val videoId = videoListResponse.body<List<Int>>().first()
+            val response = client.get("/note/video/${videoId}")
 
             val file = File("./src/test/resources/download.mp4")
-            file.writeBytes(videoListResponse.body<List<ByteArray>>().first())
+            file.writeBytes(response.body<ByteArray>())
 
-            println(videoListResponse.body<List<ByteArray>>())
+            println(videoListResponse.body<List<Int>>())
             videoListResponse shouldHaveStatus HttpStatusCode.OK
+            response shouldHaveStatus HttpStatusCode.OK
         }
     }
 

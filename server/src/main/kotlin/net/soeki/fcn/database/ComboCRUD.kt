@@ -64,14 +64,25 @@ fun getComboDetail(id: Int): ComboDetailData {
     }
 }
 
-fun getComboVideos(id: Int): List<ByteArray> {
+fun getComboVideoIds(id: Int): List<Int> {
     return transaction {
-        ComboVideo.select(ComboVideo.video)
+        ComboVideo.select(ComboVideo.id)
             .where { ComboVideo.comboId eq id }
             .orderBy(ComboVideo.id, SortOrder.ASC)
             .map {
+                it[ComboVideo.id].value
+            }
+    }
+}
+
+fun getComboVideo(id: Int): ByteArray {
+    return transaction {
+        ComboVideo.select(ComboVideo.video)
+            .where { ComboVideo.id eq id }
+            .map {
                 it[ComboVideo.video].bytes
             }
+            .first()
     }
 }
 
