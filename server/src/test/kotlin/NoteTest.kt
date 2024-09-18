@@ -84,7 +84,7 @@ class NoteTest : FunSpec({
         }
     }
 
-    test("get video by combo id") {
+    test("get video by id") {
         testApplication {
             application {
                 module()
@@ -100,6 +100,11 @@ class NoteTest : FunSpec({
             val videoListResponse = client.get("/note/video-id-list/${oldestId}")
             val videoId = videoListResponse.body<List<Int>>().first()
             val response = client.get("/note/video/${videoId}")
+            val rangeResponse = client.get("/note/video/${videoId}") {
+                headers {
+                    append("Range", "bytes=0-100000")
+                }
+            }
 
             val file = File("./src/test/resources/download.mp4")
             file.writeBytes(response.body<ByteArray>())
@@ -107,6 +112,7 @@ class NoteTest : FunSpec({
             println(videoListResponse.body<List<Int>>())
             videoListResponse shouldHaveStatus HttpStatusCode.OK
             response shouldHaveStatus HttpStatusCode.OK
+            rangeResponse shouldHaveStatus HttpStatusCode.PartialContent
         }
     }
 
@@ -229,6 +235,30 @@ class NoteTest : FunSpec({
             println(newCombo)
             response shouldHaveStatus HttpStatusCode.OK
             afterListResponse.body<List<ComboListInfo>>().map { it.id } shouldNotContain newCombo
+        }
+    }
+
+    test("delete video by id") {
+        testApplication {
+            application {
+                module()
+            }
+
+            val client = createClient {
+                install(ContentNegotiation) {
+                    json()
+                }
+            }
+            val allListResponse = client.get("/note/list/${0}/${0}")
+            val oldestId = allListResponse.body<List<ComboListInfo>>().minOf { it.id }
+            val videoListResponse = client.get("/note/video-id-list/${oldestId}")
+            val videoId = videoListResponse.body<List<Int>>().max()
+            val response = client.delete("/note/delete-combo-video/${videoId}")
+            val afterListResponse = client.get("/note/video-id-list/${oldestId}")
+
+            println(videoId)
+            response shouldHaveStatus HttpStatusCode.OK
+            afterListResponse.body<List<Int>>() shouldNotContain videoId
         }
     }
 

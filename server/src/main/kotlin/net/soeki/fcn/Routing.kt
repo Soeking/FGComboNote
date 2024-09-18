@@ -101,8 +101,12 @@ fun Application.configureRouting() {
                     if (videoResult.isSuccess) {
                         val video = videoResult.getOrNull()!!
                         if (video.second) {
+                            video.third?.run {
+                                call.response.headers.append("Content-Range", "bytes ${first}-${second}/${third}")
+                            }
                             call.respondBytes(video.first, ContentType.Video.MP4, HttpStatusCode.PartialContent) {}
                         } else {
+                            call.response.headers.append("Accept-Ranges", "bytes")
                             call.respondBytes(video.first, ContentType.Video.MP4, HttpStatusCode.OK) {}
                         }
                     } else {

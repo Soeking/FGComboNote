@@ -112,7 +112,7 @@ fun deleteComboVideo(id: Int) {
 
 fun deleteComboVideosByComboId(id: Int) {
     transaction {
-        ComboVideo.deleteWhere { ComboVideo.comboId eq id }
+        ComboVideo.deleteWhere { comboId eq id }
     }
 }
 
@@ -156,6 +156,6 @@ fun deleteComboVersion(id: Int) {
 
 fun deleteComboVersionsByComboId(id: Int) {
     transaction {
-        ComboVersion.deleteWhere { ComboVersion.comboId eq id }
+        ComboVersion.deleteWhere { comboId eq id }
     }
 }
