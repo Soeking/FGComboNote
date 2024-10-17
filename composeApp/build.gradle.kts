@@ -48,6 +48,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(projects.shared)
+
+            implementation(libs.ktor.client.core)
         }
     }
 }
