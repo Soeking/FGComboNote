@@ -14,11 +14,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import fgcombonote.composeapp.generated.resources.Res
 import fgcombonote.composeapp.generated.resources.compose_multiplatform
+import network.SendRequest
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 @Preview
 fun App() {
+    val sendRequest = SendRequest()
+    val apiText = produceState("empty") { sendRequest.callRoot() }
+
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -26,10 +30,11 @@ fun App() {
                 Text("Click me!")
             }
             AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
+                val greeting = remember { "Hello" }
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
                     Text("Compose: $greeting")
+                    Text(apiText.value)
                 }
             }
         }
